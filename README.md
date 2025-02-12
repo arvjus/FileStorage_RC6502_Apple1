@@ -18,5 +18,4 @@ This is a collection of HW / SW to provide file storage capabilty for RC6502 App
 	 
 ![emulator](https://github.com/arvjus/FDStorage_RC6502_Apple1/blob/main/gallery/fdsh.jpg)
 	
-	
-		
+![emulator](https://github.com/arvjus/FDStorage_RC6502_Apple1/blob/main/gallery/emulator.jpg)
