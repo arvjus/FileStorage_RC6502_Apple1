@@ -14,13 +14,14 @@ When the CPU sends a command, the MCU replies with an ACK or NACK message. Note 
 
 All data transmissions starts with begin-of-data-transfer (BODT) and concluded with an end-of-data-transfer (EODT) marker. BODT could be used to restart transmission, in some context this could mean separate data chunk, like file name and data in CMD_WRITE. If a new command is sent while a data transfer is in progress, it interrupts and cancels the current transmission.
 
-
+```
 ## Status flags
 RDY_FLAG  = (1 << 7)
 BSY_FLAG  = (1 << 6)
 ACK_FLAG  = (1 << 5)
 DAT_FLAG  = (1 << 4)
-
+```
+```
 ## Commands
 * CMD_LIST = 0x01     - list files. 
 * CMD_WRITE = 0x02    - save data to disk. 
@@ -30,21 +31,22 @@ DAT_FLAG  = (1 << 4)
 * EODT = 0x8F         - indicates the end of data transfer.
 * ACK  = 0x90         - MCU confirms operation
 * NACK = 0x9F         - MCU declines operation
-
+```
 Note in CMD_READ and CMD_DELETE commands it is possible to use block id instead of file name, eg. "#123"
 
 ## Design Issues
 * Writing to MCU's input register. 6502 runs at 1 MHz clock speed, it writes to $c800 address in sync with /WR+PHI2, so we have less than 500ns window to read the data. When CPU writes data, data is latched an interrupt is triggered in MCU but IRQ latency and additional cycles delays reading for 1125ns, But after 500ns window LEWRITE- goes up and we must keep that signal low until data is read in ISR. One possible solution is to add RS latch and reset it from ISR after register is read.
 
 ## Low level data exchange protocol 
-
+```
 ### CPU -> MCU
 Wait for BSY is cleared
 Write a command byte
 Wait for RDY is set
 Read a byte, ACK or NACK is expected
-
+```
 ### MCU -> CPU
+```
 In ISR:
 Set BSY, clear RDY
 Read byte, check value- command, data nibble, ACK or NACK is expected
@@ -54,10 +56,11 @@ Generate strobe CLEWRITE- to release latch
 In main loop:
 If a new command is initiate - start executing and return ACK or NACK
 Otherwise continue with data transfer or put to idle.
-
+```
 ## High level data exchange protocol
 
 ### CMD_LIST
+```
 ; CPU rquests list all files starting with 't'
 ; MCU response with single file entry
 ; 0 Type - Unused=0, File=1, Executable=2
@@ -83,9 +86,10 @@ MCU, CPU - 0x97, ACK, 0x94, ACK	; 't'
 MCU, CPU - 0x97, ACK, 0x98, ACK	; 'x'
 MCU, CPU - 0x97, ACK, 0x94, ACK	; 't'
 MCU, CPU - EODT, ACK            ; Done
-
+```
 
 ### CMD_WRITE
+```
 ; write "test" string to "test.txt" file
 CPU, MCU - CMD_WRITE, ACK
 CPU - BODT, ACK      	; File name
@@ -104,9 +108,10 @@ CPU - 0x96, 0x95		; 'e'
 CPU - 0x97, 0x93		; 's'
 CPU - 0x97, 0x94		; 't'
 CPU - EODT, ACK   	    ; Done
-
+```
 
 ### CMD_READ
+```
 ; read "empty" file
 CPU, MCU - CMD_WRITE, ACK
 CPU - BODT, ACK      	; File name
@@ -118,9 +123,10 @@ CPU - 0x97, 0x99		; 'y'
 CPU - EODT, ACK   	; File found
 MCU, CPU - BODT, ACK  ; File content
 MCU, CPU - EODT, ACK  ; Done
-
+```
 
 ### CMD_DELETE
+```
 ; request delete non-existing file
 CPU, MCU - CMD_WRITE, ACK
 CPU - BODT, ACK      	; File name
@@ -129,4 +135,4 @@ CPU - 0x96, 0x9F		; 'o'
 CPU - 0x97, 0x90		; 'p'
 CPU - 0x96, 0x95		; 'e'
 MCU - NACK  		; File not found
-
+```
