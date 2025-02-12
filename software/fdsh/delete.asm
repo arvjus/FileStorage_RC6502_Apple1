@@ -1,5 +1,5 @@
 ; Flash Disk Shell
-; Copyright (c) retain2025 Arvid Juskaitis
+; Copyright (c) 2025 Arvid Juskaitis
 
 ; Delete file
 

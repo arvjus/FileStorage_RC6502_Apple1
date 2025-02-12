@@ -1,5 +1,5 @@
 ; Flash Disk Shell
-; Copyright (c) retain2025 Arvid Juskaitis
+; Copyright (c) 2025 Arvid Juskaitis
 
 ; conversion from uint16 to string
 ; input - uint2str_number, uint2str_number+1

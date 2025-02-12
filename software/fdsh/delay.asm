@@ -1,5 +1,5 @@
 ; Flash Disk Shell
-; Copyright (c) retain2025 Arvid Juskaitis
+; Copyright (c) 2025 Arvid Juskaitis
 
 ; Delay routine. Taken from the Apple II ROM routine at $FCA8.
 ; Delay in clock cycles is 13 + 27/2 * A + 5/2 * A * A

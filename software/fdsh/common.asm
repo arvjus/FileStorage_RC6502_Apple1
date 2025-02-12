@@ -1,5 +1,5 @@
 ; Flash Disk Shell
-; Copyright (c) retain2025 Arvid Juskaitis
+; Copyright (c) 2025 Arvid Juskaitis
 
 ; ptr has to be set befor enter this
 print_msg:

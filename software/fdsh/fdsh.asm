@@ -1,5 +1,5 @@
 ; Flash Disk Shell
-; Copyright (c) retain2025 Arvid Juskaitis
+; Copyright (c) 2025 Arvid Juskaitis
 
 
 REAL_HW = 1     ; 1=Apple1 or 0=py65mon
