@@ -1,0 +1,33 @@
+Simple File System
+==================
+
+Goal - simplicity over space optimisation and performance.
+
+Built on Winbond 25Q64F (25Q128F) Flash Chip.
+Flat directory structure - all files located in the root on the disk. 
+Files stored in blocks - 256 pages * 256 (page size) = 32 Kb max. The first block stored at offset=0, the second- at 32768 and so on.
+File names are not unique. Operations like read, delete support file access by block id, e.g. #123 along with a file name.
+Support for prefixed file names. Device is stateless by its nature, but if host program uses prefix, e.g. "dir1" while creating or listing files, they would appear as a tree structured, eg. "dir1/test.txt".
+
+Limitations:
+Disk size - 8192 (16384) Mb, limited by 25Q64F/25Q128F flash size.
+Max number of files - 256 (512)
+Max file size - one block - 32 Kb
+Max file name size - 26 chars
+
+// Define the structure for a file entry
+typedef struct {
+    uint16_t block      // Block number, starting from 0
+    uint16_t start;     // Start address of the file in memory (little endian)
+    uint16_t size;      // Te size of the file in memory (little endian)
+    char name[15];      // File name, case-insensitive, padded with zeros
+} FileEntry;
+
+Note if 'Run' address is given (other than $FFFF), Type set to Runable. Type field is not used by file system itself, but user/shell program can utilize this by loading/running in one go.
+
+Operations:
+Format - erase entire disk
+List -  list files, starting with prefix or all files if none given
+Write - allocate new available block, write file header and content
+Read - search for file name, return file content
+Delete - search for file name, erase entire block

@@ -1,0 +1,25 @@
+
+
+ Pin # | Name     | Pin Type
+-----------------------------
+   1   | Clock    | Input
+   2   | A11      | Input
+   3   | A12      | Input
+   4   | A13      | Input
+   5   | A14      | Input
+   6   | A15      | Input
+   7   | RW       | Input
+   8   | NC       | Input
+   9   | NC       | Input
+  10   | GND      | GND
+  11   | NC       | Input
+  12   | /LEWRITE | Output
+  13   | /CSREAD  | Output
+  14   | NC       | NC
+  15   | NC       | NC
+  16   | NC       | NC
+  17   | NC       | NC
+  18   | NC       | NC
+  19   | NC       | NC
+  20   | VCC      | VCC
+

@@ -1,0 +1,28 @@
+back = export/rc6502_fd-B_Cu.gbr
+back-output = export/back.gcode
+drill = export/rc6502_fd.drl
+drill-output = export/drill.gcode
+
+# general
+metric = true
+metricoutput = true
+nog64 = true
+nom6 = true
+zchange = 1.0mm
+zsafe = 1.0mm
+
+# milling
+zwork=-0.05mm 
+mill-feed=100 
+mill-speed=10000 
+mill-diameters=0.30mm 
+isolation-width=0.35mm 
+milling-overlap=20% 
+
+# drilling
+drill-feed = 100mm/min
+drill-side = back
+drill-speed = 1500rpm
+drills-available = 1.0mm, 1.5mm, 2.5mm
+nog81 = true
+zdrill = -1.8mm # board thickness + .2

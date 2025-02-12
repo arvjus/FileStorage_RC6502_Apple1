@@ -1,0 +1,15 @@
+GAL16V8
+LatchEn
+
+Clock     A11      A12      A13    A14    A15    RW     NC     NC    GND
+NC       /LEWRITE  /CSREAD  NC     NC     NC     NC     NC     NC    VCC
+
+CSREAD = Clock * A15 * A14 * /A13 * /A12 * A11 * RW
+
+LEWRITE = Clock * A15 * A14 * /A13 * /A12 * A11 * /RW
+
+
+DESCRIPTION
+
+Address decoder for RC6502 FD module, address range is $c800 - $cfff
+
