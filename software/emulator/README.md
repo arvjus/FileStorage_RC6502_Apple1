@@ -7,7 +7,7 @@ Since there is only one address used ($c800), address lines can be hardwired, ar
 
 Baud rate - 38400
 
-![emulator](../gallery/emulator.jpg)
+![emulator](https://github.com/arvjus/FDStorage_RC6502_Apple1/blob/main/gallery/emulator.jpg)
 
 ##  Supported commands
 
