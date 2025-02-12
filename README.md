@@ -12,6 +12,8 @@ This is a collection of HW / SW to provide file storage capabilty for RC6502 App
 	The code is almost complete, there are couple of minor functions still missing, I'll add them soon
 	
 ## Screenshots
+![emulator](https://github.com/arvjus/FDStorage_RC6502_Apple1/blob/main/gallery/apple1_1.jpg)
 	
+ 
 	
 		
