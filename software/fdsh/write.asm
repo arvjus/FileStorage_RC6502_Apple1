@@ -1,7 +1,7 @@
 ; Flash Disk Shell
 ; Copyright (c) 2025 Arvid Juskaitis
 
-; Save from memory, write to file
+; Save memory, write to file
 
 write:
     jsr write_parse_cmd_args

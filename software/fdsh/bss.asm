@@ -3,7 +3,7 @@
 
 ; Zero-Page variables
 *   = $02
-buffer:             .fill 32        ; FileEntry
+buffer:             .fill 32        ; command / FileEntry
 buff_fe_start = buffer+2    
 buff_fe_size = buffer+4
 
@@ -12,6 +12,8 @@ prg_start:          .addr ?         ; write
 prg_stop:           .addr ?         ; calculated address
 ptr:                .addr ?         ; print_msg, read, write
 execute_flag:       .byte ?         ; non zero to run a program after loading
+
+prefix:             .fill 16        
 
 dat_mask:           .byte ?         ; value contains DAT bit
 ms_nibble:          .byte ?         ; store nibble temporary

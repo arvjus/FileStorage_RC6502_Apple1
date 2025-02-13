@@ -4,13 +4,6 @@
 ; Key deffinitions
 KEY_CR  = $0D
 KEY_ESC = $1B
-KEY_L   = 'L'
-KEY_R   = 'R'
-KEY_X   = 'X'
-KEY_W   = 'W'
-KEY_D   = 'D'
-KEY_B   = 'B'
-KEY_QM  = '?'
 
 ; Device communication address
 DEVICE_IN   = $C800

@@ -212,8 +212,25 @@ send_request:
     cmp #NACK
     beq send_request_done
 
-    ; send argument from buffer[1]
-    ldx #1
+    ; send prefix if any
+    ldx #2
+    lda buffer, x
+    cmp #'#'                ; block id start
+    beq send_request_args   ; don't prefix block id
+    ldx #0
+    lda prefix, x
+    beq send_request_args   ; empty prefix
+send_request_prefix:
+    lda prefix, x
+    beq send_request_args
+    jsr send_data_byte
+    bcs send_request_err    ; timeout
+    inx
+    jmp send_request_prefix;
+
+    ; send argument from buffer[2]
+send_request_args:
+    ldx #2
 send_request_arg:
     lda buffer, x
     beq send_request_eodt

@@ -1,7 +1,6 @@
 ; Flash Disk Shell
 ; Copyright (c) 2025 Arvid Juskaitis
 
-
 .if REAL_HW     ;--------------------------------------
 
 MOCK_HW = 0
