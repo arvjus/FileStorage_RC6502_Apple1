@@ -16,10 +16,11 @@ This is a collection of HW / SW to provide file storage capabilty for RC6502 App
  	* Integrasion with WozMon. 
  
 ## Screenshots
+![emulator](https://github.com/arvjus/FDStorage_RC6502_Apple1/blob/main/gallery/fdsh.jpg)
+	
+![emulator](https://github.com/arvjus/FDStorage_RC6502_Apple1/blob/main/gallery/emulator.jpg)
+
 ![emulator](https://github.com/arvjus/FDStorage_RC6502_Apple1/blob/main/gallery/apple1_1.jpg)
 	
 ![emulator](https://github.com/arvjus/FDStorage_RC6502_Apple1/blob/main/gallery/apple1_2.jpg)
 	 
-![emulator](https://github.com/arvjus/FDStorage_RC6502_Apple1/blob/main/gallery/fdsh.jpg)
-	
-![emulator](https://github.com/arvjus/FDStorage_RC6502_Apple1/blob/main/gallery/emulator.jpg)
