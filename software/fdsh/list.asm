@@ -33,9 +33,8 @@ list_fileentry_store:
     bne list_fileentry_byte
     ; print and check if user has not canceled
     jsr list_print_fileentry
-    jsr KBDIN_NOWAIT
-    cmp #KEY_ESC
-    bne list_fileentry      ; next file entry
+    jsr KBDIN_NOWAIT        ; 0 in A if no key pressed
+    beq list_fileentry      ; next file entry
 list_done:
     rts
 list_err:

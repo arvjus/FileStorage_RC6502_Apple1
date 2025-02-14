@@ -3,7 +3,7 @@
 
 REAL_HW = 1     ; 1=Apple1 or 0=py65mon
 DEBUG = 0       ; 1=Show traces in data exchange
-VERSION = "0.9.2"
+VERSION = "0.9.3"
 
     .include "defs.asm"
     .include "bss.asm"
@@ -48,11 +48,18 @@ menu_input:
     jsr KBDIN
     jsr ECHO
     sta buffer, x
+    cmp #KEY_BS
+    beq menu_input_back
     cmp #KEY_ESC
     beq exit
     cmp #KEY_CR
     beq menu_process
     inx
+    jmp menu_input
+menu_input_back:
+    cpx #0
+    beq menu_input
+    dex 
     jmp menu_input
 ; process command
 menu_process:

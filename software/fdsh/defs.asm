@@ -2,6 +2,7 @@
 ; Copyright (c) 2025 Arvid Juskaitis
 
 ; Key deffinitions
+KEY_BS  = $08
 KEY_CR  = $0D
 KEY_ESC = $1B
 
