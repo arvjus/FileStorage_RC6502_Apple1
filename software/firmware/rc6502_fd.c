@@ -1,6 +1,5 @@
 /*
 RC6502 FLASH (W25Q64F) Card firmware
-Copyright (c) 2025 Arvid Juskaitis
 
 PINC  - CPU -> MCU
 PORTA - MCU -> CPU
@@ -240,7 +239,9 @@ ISR(INT0_vect) {
             } else {
                 print_msg("MEM!");  // we're out of bounds - very bad
             }
-            MCU_OUT = ACK;
+            if (!handle_disk_data) {
+                MCU_OUT = ACK;
+            }
         }
     } else {
         // 5th bit not set -> control/status mode
