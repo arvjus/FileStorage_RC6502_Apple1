@@ -1,4 +1,4 @@
-# File_Storage_RC6502_Apple1
+# FileStorage_RC6502_Apple1
 
 This is a collection of HW / SW to provide file storage capabilty for RC6502 Apple1 Replica.
 	
