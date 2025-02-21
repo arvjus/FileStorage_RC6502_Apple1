@@ -1,6 +1,11 @@
 ; Flash Disk Shell
 ; Copyright (c) 2025 Arvid Juskaitis
 
+; addresses within tmp_buffer
+uint2str_buffer     = tmp_buffer    ; 6 bytes
+uint2str_number     = tmp_buffer+6  ; 2 bytes
+uint2str_remainder  = tmp_buffer+8  ; 1 byte
+
 ; conversion from uint16 to string
 ; input - uint2str_number, uint2str_number+1
 ; output - uint2str_buffer (5 bytes instead of 6)

@@ -88,7 +88,7 @@ list_print_fileentry:
     SET_PTR buffer+6
     jsr print_msg
 list_print_fileentry_done:
-    lda #KEY_CR
+    lda #CR
     jsr ECHO
     rts
 

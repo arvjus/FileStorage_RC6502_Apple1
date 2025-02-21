@@ -2,9 +2,9 @@
 ; Copyright (c) 2025 Arvid Juskaitis
 
 ; Key deffinitions
-KEY_BS  = $08
-KEY_CR  = $0D
-KEY_ESC = $1B
+BS  = $08
+CR  = $0D
+ESC = $1B
 
 ; Device communication address
 DEVICE_IN   = $C800

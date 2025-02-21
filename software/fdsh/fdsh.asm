@@ -3,7 +3,7 @@
 
 REAL_HW = 1     ; 1=Apple1 or 0=py65mon
 DEBUG = 0       ; 1=Show traces in data exchange
-VERSION = "0.9.3"
+VERSION = "0.9.9"
 
     .include "defs.asm"
     .include "bss.asm"
@@ -31,11 +31,15 @@ dfsh:
     sta dat_mask    ; A bit to test to distinguish between data and ctrl byte
     lda #0
     sta prefix      ; clear prefix buffer
+    lda #$00        ; Default to WozMon
+    sta prg_start
+    lda #$ff
+    sta prg_start+1
 .if MOCK_HW
     lda #$97        ; RDY, not BSY and two nibbles == 'w' 
     sta DEVICE_IN
 .endif    
-    lda #KEY_CR
+    lda #CR
     jsr ECHO
 
 menu:
@@ -48,11 +52,11 @@ menu_input:
     jsr KBDIN
     jsr ECHO
     sta buffer, x
-    cmp #KEY_BS
+    cmp #BS
     beq menu_input_back
-    cmp #KEY_ESC
+    cmp #ESC
     beq exit
-    cmp #KEY_CR
+    cmp #CR
     beq menu_process
     inx
     jmp menu_input
@@ -99,40 +103,43 @@ unknown_cmd:
 do_list:
     jsr list
     jmp menu
+do_read:
+    jsr read
+    jmp menu
 do_load:
-    jsr read
-    jmp menu
-do_exec_prog:
-    jsr execute
-    jmp menu
-do_exec_basic:
-    jsr read
-    jmp $e2b3       ; BASIC warm entry
-do_store:
+    jsr load
+    bcs menu
+    jmp $e2b3           ; BASIC warm entry
+do_write:
     jsr write
     jmp menu
+do_save:
+    jsr save
+    jmp menu
+do_run:
+    jmp (prg_start)     ; address must be set by loading or saving file
 do_remove:
     jsr delete
     jmp menu
 
 ; Exit to WozMon
 exit:   
-    jmp $ff00       ; WozMon entry
+    jmp $ff00           ; WozMon entry
 
-; Copies up to 14 bytes from buffer+1 to prefix, appends '/' if buffer+2 is not null
-prefix_copy:
+; Copies up to 12 bytes from buffer+1 to prefix, appends '/' if buffer+2 is not null
+cd_prefix:
     ldx #2
     ldy #0
     lda buffer,x
     beq prefix_null_terminate
-prefix_copy_loop:
+cd_prefix_loop:
     lda buffer,x
     beq prefix_append_slash
     sta prefix,y
     inx
     iny
-    cpy #14
-    bne prefix_copy_loop
+    cpy #12
+    bne cd_prefix_loop
 prefix_append_slash:
     cpy #0
     beq prefix_null_terminate
@@ -148,24 +155,26 @@ prefix_null_terminate:
 ; 2 bytes: command prefix
 ; 2 bytes: jump address (low/high)
 cmd_table:
-    .byte 'C', 'D', <prefix_copy, >prefix_copy
-    .byte 'L', 'S', <do_list, >do_list
-    .byte 'L', 'D', <do_load, >do_load
-    .byte 'X', 'P', <do_exec_prog, >do_exec_prog
-    .byte 'X', 'B', <do_exec_basic, >do_exec_basic
-    .byte 'S', 'T', <do_store, >do_store
+    .byte 'C', 'D', <cd_prefix, >cd_prefix
+    .byte 'L', 'S', <do_list,   >do_list
+    .byte 'W', 'R', <do_write,  >do_write
+    .byte 'R', 'D', <do_read,   >do_read
+    .byte 'R', 'N', <do_run,    >do_run
+    .byte 'S', 'V', <do_save,   >do_save
+    .byte 'L', 'D', <do_load,   >do_load
     .byte 'R', 'M', <do_remove, >do_remove
     .byte 0          ; End of table marker
 
 help:
 .if REAL_HW
     .text "FlashDisk Shell v", VERSION, " by Arvid Juskaitis", 13
-    .text "CD        CD[directory]", 13
-    .text "List      LS[prefix]", 13
-    .text "Store     ST<filename>#start#stop", 13
-    .text "Load      LD<filename>|#block", 13
-    .text "ExecProg  XP<filename>|#block", 13
-    .text "ExecBasic XB<filename>|#block", 13
-    .text "Remove    RM<filename>|#block", 13
+    .text "CD     CD[directory]", 13
+    .text "List   LS[prefix]", 13
+    .text "Write  WR<filename>#start#stop", 13
+    .text "Read   RD<filename>|#block", 13
+    .text "Run    RN", 13
+    .text "Save   SV<filename>", 13
+    .text "Load   LD<filename>|#block", 13
+    .text "Remove RM<filename>|#block", 13
 .endif
     .text 0

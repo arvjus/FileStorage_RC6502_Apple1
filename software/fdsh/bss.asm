@@ -2,22 +2,26 @@
 ; Copyright (c) 2025 Arvid Juskaitis
 
 ; Zero-Page variables
-*   = $02
+*   = $00
 buffer:             .fill 32        ; command / FileEntry
 buff_fe_start = buffer+2    
 buff_fe_size = buffer+4
-
-*   = $2d
-prg_start:          .addr ?         ; write
+prg_start:          .addr ?         ; write, jmp_prg
 prg_stop:           .addr ?         ; calculated address
-ptr:                .addr ?         ; print_msg, read, write
-execute_flag:       .byte ?         ; non zero to run a program after loading
 
-prefix:             .fill 16        
+; $24 - $2b used by WozMon
+*   = $2d
+ptr:                .addr ?         ; print_msg, read, write
+flag:               .byte ?         ; flag to control execution, prg storing, loading
+
+prefix:             .fill 14        
 
 dat_mask:           .byte ?         ; value contains DAT bit
 ms_nibble:          .byte ?         ; store nibble temporary
 
-uint2str_buffer:    .fill 6
-uint2str_number:    .word ?
-uint2str_remainder: .byte ?
+tmp_buffer:         .fill 10        ; variables used by conversion functions
+
+; $4a - $ff used by A1 BASIC
+*   = $4a
+lomem:              .addr ?         ; BASIC program location
+himem:              .addr ?

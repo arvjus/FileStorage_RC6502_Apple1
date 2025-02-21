@@ -8,9 +8,9 @@ delete:
     jsr print_msg
 delete_confirm:
     jsr KBDIN
-    cmp #KEY_ESC
+    cmp #ESC
     beq delete_done
-    cmp #KEY_CR
+    cmp #CR
     bne delete_confirm
 
     lda #CMD_DELETE
@@ -22,7 +22,7 @@ delete_confirm:
     beq delete_err
 
 delete_done:
-    lda #KEY_CR
+    lda #CR
     jsr ECHO
     rts
 delete_err:

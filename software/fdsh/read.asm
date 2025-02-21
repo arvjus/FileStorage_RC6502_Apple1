@@ -3,14 +3,16 @@
 
 ; Read file, load into memory, eventualy execute loaded program
 
-execute:
-    lda #1
-    sta execute_flag
-    jmp read_entry
+; load Integer-BASIC stored in ProDOS format
+load:
+    lda #'b'                    ; Integer-BASIC in ProDOS format
+    sta flag
+    jmp read_request
+; read regular file
 read:
-    lda #0
-    sta execute_flag
-read_entry:
+    lda #0                      ; regular file
+    sta flag
+read_request:
     lda #CMD_READ
     jsr send_request
     bcc read_request_ok         ; ok, continue
@@ -37,16 +39,24 @@ read_fileentry_store:
     sta buffer, x
     inx
     cpx #32
-    bne read_fileentry_byte
+    bne read_fileentry_byte     ; not done with FileEntry?
+    
+    lda flag
+    beq read_receive_data_bytes ; process as regular file
+    jsr load_basic_header
+    bcs load_err                ; haven't succeeded
+        
+; print message, load rest of data into memory
+read_receive_data_bytes:
     jsr calc_prg_stop
     jsr read_print_messages_start_stop
 
-; keep receiving data bytes, laod into memory
-
-    ; initialize ptr with buff_fe_start
+    ; initialize ptr with buff_fe_start, save address to prg_start
     lda buff_fe_start
+    sta prg_start
     sta ptr
     lda buff_fe_start+1
+    sta prg_start+1
     sta ptr+1
 
 read_receive_data_byte:
@@ -81,19 +91,22 @@ read_skip_high:
 read_prg_done:
     SET_PTR read_msg3
     jsr print_msg
-
-; jump into start address
-    lda execute_flag
-    beq read_done
-    jmp (buff_fe_start)        
-
 read_done:
-    lda #KEY_CR
+    lda #CR
     jsr ECHO
+    clc                         ; success
     rts
+
 read_err:
     lda #'!'
     jsr ECHO
+    sec                         ; failure
+    rts
+
+load_err:
+    SET_PTR load_msg1
+    jsr print_msg
+    sec                         ; failure
     rts
 
 ; print messages start, stop values
@@ -125,6 +138,62 @@ read_print_messages_start_stop:
     jsr ECHO
     rts
 
+; handle first 512 bytes of data      
+load_basic_header:
+    ; check header
+    jsr receive_data_byte
+    bcs load_basic_err          ; byte is expected
+    cmp #'A'
+    bne load_basic_err          ; file signature is expected
+    jsr receive_data_byte
+    bcs load_basic_err          ; byte is expected
+    cmp #'1'
+    bne load_basic_err          ; file signature is expected
+    
+    ; skip another $48 bytes
+    lda #2
+    sta ptr                     ; we've already received 2 bytes 
+load_skip_zp_loop:    
+    jsr receive_data_byte
+    bcs load_basic_err          ; byte is expected
+    inc ptr
+    lda ptr
+    cmp #$4a
+    bne load_skip_zp_loop
+
+    ; load $4a - $ff data
+    lda #0                      ; ZP                      
+    sta ptr+1                   ; while LSB points to $4a
+read_receive_zp_data_byte:
+    jsr receive_data_byte
+    bcs load_basic_err          ; byte is expected
+    ldy #$00
+    sta (ptr),y
+    inc ptr
+    bne read_receive_zp_data_byte   ; loop until value wrapps
+
+    ; skip $100 - $1ff
+    lda #1                      ; stack, first page        
+    sta ptr+1                   ; ZP, while LSB is 0
+load_skip_stack_loop:    
+    jsr receive_data_byte
+    bcs load_basic_err          ; byte is expected
+    inc ptr
+    bne load_skip_stack_loop
+
+    ; we've read 512 ($0200) bytes, subtract this number from buff_fe_size
+    lda buff_fe_size+1
+    sec
+    sbc #$02
+    sta buff_fe_size+1
+    ; done
+    clc                         ; success
+    rts
+load_basic_err:
+    sec                         ; failure
+    rts
+
 read_msg1:  .text "Reading ", 0
 read_msg2:  .text " into memory ", 0
 read_msg3:  .text " .. done.", 0
+load_msg1:  .text "This is not BASIC program", 13, 0
